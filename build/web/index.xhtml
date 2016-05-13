@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            Latitude
+            <h:inputText id="latitude" value="#{ControllerBean.latitude}"></h:inputText>  
+            Longitude
+            <h:inputText id="longitude" value="#{ControllerBean.longitude}"></h:inputText>  
+            <h:commandButton value="Get adress" action="#{ControllerBean.calculateAdress()}">
+                <f:ajax execute="@form" render="output" />
+            </h:commandButton>
+        </h:form>
+        <h:form>  
+            <h:commandButton value="Test get invoice" action="#{ControllerBean.testGetInvoice()}">
+            </h:commandButton>
+        </h:form>
+        <div>
+            <h:outputText id="output" value="#{ControllerBean.adress}"></h:outputText>
+        </div>
+    </h:body>
+</html>
+
