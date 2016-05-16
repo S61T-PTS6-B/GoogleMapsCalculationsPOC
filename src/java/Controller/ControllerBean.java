@@ -55,11 +55,6 @@ public class ControllerBean implements Serializable {
     public void setAdress(String adress) {
         this.adress = adress;
     }
-
-    public void calculateAdress() throws ParseException {
-        this.lc = new LocationsCalculator();
-        this.adress = lc.calculateAdress(Double.parseDouble(latitude), Double.parseDouble(longitude));
-    }
     
     public void testGetInvoice() throws ParseException {
         this.lc = new LocationsCalculator();

@@ -5,6 +5,7 @@
  */
 package Logic;
 
+import Model.Cordon;
 import Model.Invoice;
 import Model.Location;
 import Model.Road;
@@ -30,28 +31,62 @@ public class LocationsCalculator {
 
     private List<Road> roads;
     private Invoice invoice;
+    private List<Cordon> existingCordons;
 
     public LocationsCalculator() {
         invoice = new Invoice();
+
         this.roads = new ArrayList<>();
         this.roads.add(new Road("NO_SPECIAL_ROAD", 0.05));
         this.roads.add(new Road("TESTROAD", 0.09));
         this.roads.add(new Road("E25", 0.08));
         this.roads.add(new Road("Rijksweg Den Bosch-Eindhoven", 0.10));
+
+        this.existingCordons = new ArrayList<>();
+        this.existingCordons.add(new Cordon("Weert", 10));
+        this.existingCordons.add(new Cordon("Best", 5));
+        this.existingCordons.add(new Cordon("Boxtel", 8));
     }
 
     public Invoice getInvoice(List<Location> locations) throws ParseException {
 
+        this.invoice = new Invoice();
+
         //Stap 1: Sorteren op datum
         Collections.sort(locations, (Location loc, Location loc1) -> loc.getDate().compareTo(loc1.getDate()));
 
-        //Stap 2: Kijken of er een cordongebied ingereden is (disctinct of per keer dat je het binnenrijdt?)
-        //TODO
-        
-        //Stap 3: Naam van de locatie opvragen en in het locatie object zetten
+        //Stap 2: Naam van de locatie opvragen en in het locatie object zetten
         for (Location loc : locations) {
-            loc.setRoad(calculateAdress(loc.getLatitude(), loc.getLongitude()));
+            calculateAdress(loc);
         }
+
+        //Stap 3: Kijken of er een cordongebied ingereden is (disctinct of per keer dat je het binnenrijdt?)
+        List<Cordon> cordons = new ArrayList<>();
+        String lastCordonName = "NO_CORDON";
+        
+        for (Location loc : locations) {
+            boolean hasCordon = false;
+            for (Cordon c : existingCordons) {
+                
+                //Als de stad van de locatie een specifiek cordongebied is
+                if (c.getPlaceName().equals(loc.getCity())) {
+                    hasCordon = true;
+                    
+                    //Als de vorige locatie nog niet in dit cordongebied was
+                    if (loc.getCity().equals(lastCordonName) == false) {
+                        cordons.add(new Cordon(c.getPlaceName(), c.getAmount()));
+                        lastCordonName = c.getPlaceName();
+                    }
+                }
+            }
+            if (hasCordon == false) {
+                lastCordonName = "NO_CORDON";
+            }
+        }
+        for (Cordon c : cordons) {
+            System.out.println("Cordon area entered: " + c.toString() + ". Which brings the total amount to " + invoice.getTotalAmount() + "euros");
+        }
+        invoice.setCordonOccurrences(cordons);
 
         //Stap 4: Kijken welke locaties op een snelweg liggen
         // - Lijst van snelweg namen hebben
@@ -108,7 +143,6 @@ public class LocationsCalculator {
 //                System.out.println("List nr: " + i + ", " + l.toString() + ", rate per kilometer: " + serie.getRoad().getRate());
 //            }
 //        }
-
         //Stap 5: Bereken van die lijst welke locaties er op een bepaald tarieftijd zijn gelogd
         // - scheid die locaties in lijsten
         // - bereken de afstand van die locaties, en het bedrag dat daarover betaald moet worden
@@ -119,12 +153,14 @@ public class LocationsCalculator {
         System.out.println("RESULTS:");
         System.out.println("The total amount of the list is " + invoice.getTotalAmount() + " euro's");
         System.out.println("The total disctance of the list is " + invoice.getTotalDistance() + " kilometers");
-        
+
         //Stap 6: Return het Invoice object
         return this.invoice;
     }
 
-    public String calculateAdress(double latitude, double longitude) throws ParseException {
+    public void calculateAdress(Location loc) throws ParseException {
+        double latitude = loc.getLatitude();
+        double longitude = loc.getLongitude();
         Client client = ClientBuilder.newClient();
         WebTarget myResource = client.target("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&key=AIzaSyDSR66C1DixiI6wv_Fv3kTVUQYwMQ0VPIY");
         String response = myResource.request(MediaType.APPLICATION_JSON).get(String.class);
@@ -132,10 +168,20 @@ public class LocationsCalculator {
         JSONParser parser = new JSONParser();
         JSONObject jsonobj = (JSONObject) parser.parse(response);
         JSONArray resultslist = (JSONArray) jsonobj.get("results");
-        JSONObject firstresult = (JSONObject) resultslist.get(0);
-        String result = (String) firstresult.get("formatted_address");
-        result = result.substring(0, result.indexOf(","));
-        return result;
+        JSONObject result = (JSONObject) resultslist.get(0);
+        String resultroad = (String) result.get("formatted_address");
+        resultroad = resultroad.substring(0, resultroad.indexOf(","));
+        
+        loc.setRoad(resultroad);
+        
+        try {
+            result = (JSONObject) resultslist.get(resultslist.size() - 3);
+            String resultcity = (String) result.get("formatted_address");
+            resultcity = resultcity.substring(0, resultcity.indexOf(","));
+            loc.setCity(resultcity);
+        } catch (Exception e) {
+            
+        }
     }
 
     private Invoice processSeriesToTotalAmount(List<SeriesOfLocationsOnRoad> seriesOfLocationsOnRoad) {
@@ -241,13 +287,14 @@ public class LocationsCalculator {
         testLocations.add(new Location(51.519691, 5.397518));
         //geen snelweg
         testLocations.add(new Location(51.521286, 5.399769));
-        
+
         this.getInvoice(testLocations);
 
-        /********************************************************************
+        /**
+         * ******************************************************************
          * TESTCODE 
-         ********************************************************************/
-        
+         *******************************************************************
+         */
 //        double distanceResult = 0;
 //
 //        List<SeriesOfLocationsOnRoad> seriesOfLocationsOnRoad = new ArrayList<>();
@@ -281,9 +328,10 @@ public class LocationsCalculator {
 //        System.out.println("The total disctance of the list should be " + results.getTotalDistance());
 //        
 //        this.invoice = new Invoice();
-
-        /********************************************************************
+        /**
+         * ******************************************************************
          * EINDE TESTCODE 
-         ********************************************************************/
+         *******************************************************************
+         */
     }
 }

@@ -18,6 +18,7 @@ public class Location implements Serializable {
     private double latitude;
     private String road;
     private Date date;
+    private String city;
     
     public Location(double latitude, double longitude) {
         this.date = new Date();
@@ -25,6 +26,14 @@ public class Location implements Serializable {
         this.latitude = latitude;
     }
     
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getRoad() {
         return road;
     }

@@ -16,7 +16,7 @@ public class Invoice {
     private double totalAmount;
     private List<Location> locations;
     private double totalDistance;
-    private List<CordonOccurrence> cordonOccurrences;
+    private List<Cordon> cordonOccurrences;
  
     public double getTotalAmount() {
         return totalAmount;
@@ -43,11 +43,11 @@ public class Invoice {
         this.totalDistance += distance;
     }
 
-    public List<CordonOccurrence> getCordonOccurrences() {
+    public List<Cordon> getCordonOccurrences() {
         return cordonOccurrences;
     }
 
-    public void setCordonOccurrences(List<CordonOccurrence> cordonOccurrences) {
+    public void setCordonOccurrences(List<Cordon> cordonOccurrences) {
         this.cordonOccurrences = cordonOccurrences;
     }
 }
