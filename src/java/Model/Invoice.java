@@ -5,6 +5,7 @@
  */
 package Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,8 +14,13 @@ import java.util.List;
  */
 public class Invoice {
 
+    public Invoice() {
+        this.seriesOfLocationsOnRoad = new ArrayList<>();
+        this.cordonOccurrences = new ArrayList<>();
+    }
+
     private double totalAmount;
-    private List<Location> locations;
+    List<SeriesOfLocationsOnRoad> seriesOfLocationsOnRoad;
     private double totalDistance;
     private List<Cordon> cordonOccurrences;
  
@@ -27,12 +33,12 @@ public class Invoice {
         System.out.println("The rate was " + rate + "| " + kilometers + " kilometers * " + rate + " euro's = " + (kilometers * rate) + " euro's, which brings the total to " + this.totalAmount);
     }
 
-    public List<Location> getLocations() {
-        return locations;
+    public List<SeriesOfLocationsOnRoad> getSeriesOfLocationsOnRoad() {
+        return seriesOfLocationsOnRoad;
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
+    public void setSeriesOfLocationsOnRoad(List<SeriesOfLocationsOnRoad> seriesOfLocationsOnRoad) {
+        this.seriesOfLocationsOnRoad = seriesOfLocationsOnRoad;
     }
 
     public double getTotalDistance() {
@@ -46,8 +52,9 @@ public class Invoice {
     public List<Cordon> getCordonOccurrences() {
         return cordonOccurrences;
     }
-
-    public void setCordonOccurrences(List<Cordon> cordonOccurrences) {
-        this.cordonOccurrences = cordonOccurrences;
+    
+    public void addCordonOccurrence(Cordon cordon) {
+        this.totalAmount += cordon.getAmount();
+        this.cordonOccurrences.add(cordon);
     }
 }

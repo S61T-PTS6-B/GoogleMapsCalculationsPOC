@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="invoiceBatchJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <step id="mainstep">
+        <chunk>
+            <reader ref="InvoiceReader"></reader>
+            <processor ref="InvoiceProcessor"></processor>
+            <writer ref="InvoiceWriter"></writer>
+        </chunk>
+    </step>
+</job>

@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
+import javax.batch.operations.JobOperator;
+import javax.batch.runtime.BatchRuntime;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -53,8 +56,8 @@ public class LocationsCalculator {
         this.invoice = new Invoice();
 
         //Stap 1: Sorteren op datum
-        Collections.sort(locations, (Location loc, Location loc1) -> loc.getDate().compareTo(loc1.getDate()));
-
+        Collections.sort(locations);
+        
         //Stap 2: Naam van de locatie opvragen en in het locatie object zetten
         for (Location loc : locations) {
             calculateAdress(loc);
@@ -84,9 +87,9 @@ public class LocationsCalculator {
             }
         }
         for (Cordon c : cordons) {
+            invoice.addCordonOccurrence(c);
             System.out.println("Cordon area entered: " + c.toString() + ". Which brings the total amount to " + invoice.getTotalAmount() + "euros");
         }
-        invoice.setCordonOccurrences(cordons);
 
         //Stap 4: Kijken welke locaties op een snelweg liggen
         // - Lijst van snelweg namen hebben
@@ -135,6 +138,8 @@ public class LocationsCalculator {
                 lastRoadName = "NO_SPECIAL_ROAD";
             }
         }
+        
+        invoice.setSeriesOfLocationsOnRoad(seriesOfLocationsOnRoad);
 
 //        //Tussenstap: Print alle locaties uit alle serie lijsten op het scherm
 //        for (int i = 0; i < seriesOfLocationsOnRoad.size(); i++) {
@@ -333,5 +338,10 @@ public class LocationsCalculator {
          * EINDE TESTCODE 
          *******************************************************************
          */
+    }
+    
+    public void runBatchJob() {
+        JobOperator jobOperator = BatchRuntime.getJobOperator();
+        jobOperator.start("invoiceBatchJob", new Properties());
     }
 }

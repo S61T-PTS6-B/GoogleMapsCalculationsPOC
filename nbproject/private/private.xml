@@ -3,13 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Max/Documents/NetBeansProjects/GoogleMapsCalculationsPOC/src/java/Model/Road.java</file>
-            <file>file:/C:/Users/Max/Documents/NetBeansProjects/GoogleMapsCalculationsPOC/src/java/Controller/ControllerBean.java</file>
-            <file>file:/C:/Users/Max/Documents/NetBeansProjects/GoogleMapsCalculationsPOC/src/java/Model/Location.java</file>
-            <file>file:/C:/Users/Max/Documents/NetBeansProjects/GoogleMapsCalculationsPOC/src/java/Model/Cordon.java</file>
-            <file>file:/C:/Users/Max/Documents/NetBeansProjects/GoogleMapsCalculationsPOC/src/java/Model/Invoice.java</file>
-            <file>file:/C:/Users/Max/Documents/NetBeansProjects/GoogleMapsCalculationsPOC/src/java/Logic/LocationsCalculator.java</file>
-            <file>file:/C:/Users/Max/Documents/NetBeansProjects/GoogleMapsCalculationsPOC/src/java/Model/SeriesOfLocationsOnRoad.java</file>
+            <file>file:/C:/Users/Max/Documents/GitHub/GoogleMapsCalculationsPOC/src/java/batch/InvoiceReader.java</file>
         </group>
     </open-files>
 </project-private>

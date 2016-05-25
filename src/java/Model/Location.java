@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @author Max
  */
-public class Location implements Serializable {
+public class Location implements Serializable, Comparable<Location> {
 
     private double longitude;
     private double latitude;
@@ -22,6 +22,12 @@ public class Location implements Serializable {
     
     public Location(double latitude, double longitude) {
         this.date = new Date();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+    
+    public Location(double latitude, double longitude, Date date) {
+        this.date = date;
         this.longitude = longitude;
         this.latitude = latitude;
     }
@@ -58,4 +64,9 @@ public class Location implements Serializable {
     public String toString() {
         return "(" + this.latitude + ", " + this.longitude + ") on road: " + this.road;
     }
+    
+    @Override
+  public int compareTo(Location o) {
+    return getDate().compareTo(o.getDate());
+  }
 }
